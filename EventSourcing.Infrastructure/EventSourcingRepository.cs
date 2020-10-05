@@ -30,7 +30,7 @@ namespace EventSourcing.Infrastructure
 
                 foreach (var @event in await _eventStore.ReadEventsAsync(id))
                 {
-                    (aggregate as AggregateBase<TAggregate>).ApplyEvent(@event.DomainEvent as IDomainEvent<TAggregate>, @event.EventNumber);
+                    (aggregate as AggregateBase<TAggregateId>).ApplyEvent(@event.DomainEvent as IDomainEvent<TAggregateId>, @event.EventNumber);
                 }
 
                 return aggregate;

@@ -34,6 +34,7 @@ namespace EventSourcing.Infrastructure
 
                 _dbContext.Events.Add(entity);
                 await _dbContext.SaveChangesAsync();
+
                 return new AppendResult(@event.AggregateVersion  + 1);
             }
             catch (Exception ex)
@@ -46,7 +47,7 @@ namespace EventSourcing.Infrastructure
         {
             try
             {
-                var events = await _dbContext.Events.Where(x => x.AggregateId == id.ToString()).ToListAsync();
+                var events = await _dbContext.Events.AsNoTracking().Where(x => x.AggregateId == id.ToString()).ToListAsync();
                 return events.Select(x => new Event<TAggregateId>(
                     Deserialize<TAggregateId>(x.Type, x.Data),
                     x.AggregateVersion));

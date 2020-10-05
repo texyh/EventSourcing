@@ -22,7 +22,7 @@ namespace EventSourcing.Infrastructure
         {
             modelBuilder.Entity<EventEntity>(entity =>
             {
-                entity.HasKey(x => x.AggregateId);
+                entity.HasKey(x => x.EventId);
             });
 
             modelBuilder.Entity<AccountReadModel>(entity =>
