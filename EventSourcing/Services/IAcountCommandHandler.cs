@@ -8,7 +8,7 @@ namespace EventSourcing.Services
     public interface IAcountCommandHandler
     {
         Task<int> CreateAsync(string accountName);
-        Task Deposit(double amount, int accoutNumber);
-        Task Withdraw(double amount, int accoutNumber);
+        Task Deposit(decimal amount, int accoutNumber);
+        Task Withdraw(decimal amount, int accoutNumber);
     }
 }

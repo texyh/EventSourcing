@@ -28,19 +28,23 @@ namespace EventSourcing
             services.AddScoped<IDomainEventHandler<FundDepositEvent>, AccountEventHandler>();
             services.AddScoped<IDomainEventHandler<WithdrawalEvent>, AccountEventHandler>();
 
-            services.AddSingleton<AccountEventProcessor>(_ =>
+            services.AddSingleton<AccountEventProcessor<Guid>>(_ =>
             {
-                var handlers = new Dictionary<string, IDomainEventHandler<object>>();
-                //handlers.Add(typeof(AccountCreatedEvent).Name, _.GetService<IDomainEventHandler<AccountCreatedEvent>>());
-                //handlers.Add(typeof(FundDepositEvent).Name, (IDomainEventHandler<object>)_.GetService<IDomainEventHandler<FundDepositEvent>>());
-                //handlers.Add(typeof(WithdrawalEvent).Name, (IDomainEventHandler<object>)_.GetService<IDomainEventHandler<WithdrawalEvent>>());
+                var accountHandler =  _.GetService<IDomainEventHandler<AccountCreatedEvent>>();
+                var fundsHandler = _.GetService<IDomainEventHandler<FundDepositEvent>>();
+                var withdrawlHandler  =_.GetService<IDomainEventHandler<WithdrawalEvent>>();
 
-                return new AccountEventProcessor(handlers);
+                var processor =  new AccountEventProcessor<Guid>();
+                processor.RegisterApplier<AccountCreatedEvent>(async @event => await accountHandler.HandleAsync(@event));
+                processor.RegisterApplier<FundDepositEvent>(async  @event => await fundsHandler.HandleAsync(@event));
+                processor.RegisterApplier<WithdrawalEvent>(async @event => await withdrawlHandler.HandleAsync(@event));
+
+                return processor;
             });
 
-            services.AddSingleton<IProcessor>(_ => 
+            services.AddSingleton<IProcessor<Guid>>(_ => 
             {
-                return _.GetService<AccountEventProcessor>();
+                return _.GetService<AccountEventProcessor<Guid>>();
             });
 
             services.AddScoped<IAcountCommandHandler, AccountCommandHandler>();

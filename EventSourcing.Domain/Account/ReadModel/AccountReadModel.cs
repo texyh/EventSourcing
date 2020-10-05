@@ -8,7 +8,7 @@ namespace EventSourcing.Domain.Account.ReadModel
 
         public int Number {get; set;}
 
-        public double Balance {get; set;}
+        public decimal Balance {get; set;}
 
         public string Name {get; set;}
     }

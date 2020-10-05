@@ -44,7 +44,7 @@ namespace EventSourcing.Services
             return account.AccountNumber;
         }
 
-        public async Task Deposit(double amount, int accoutNumber)
+        public async Task Deposit(decimal amount, int accoutNumber)
         {
             var accountReadModel = await _accountReadonlyRepository.Get(x => x.Number == accoutNumber);
 
@@ -59,7 +59,7 @@ namespace EventSourcing.Services
             await _accountReposiotry.SaveAsync(account);
         }
 
-        public async Task Withdraw(double amount, int accoutNumber)
+        public async Task Withdraw(decimal amount, int accoutNumber)
         {
             var accountReadModel = await _accountReadonlyRepository.Get(x => x.Number == accoutNumber);
 

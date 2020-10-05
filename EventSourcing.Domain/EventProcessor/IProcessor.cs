@@ -1,12 +1,13 @@
-﻿using System;
+﻿using EventSourcing.Domain.Core;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace EventSourcing.Domain.EventProcessor
 {
-    public interface IProcessor
+    public interface IProcessor<TId>
     {
-        Task ProcessAsync(object @event, Type type);
+        void ProcessAsync(object @event, Type type);
     }
 }

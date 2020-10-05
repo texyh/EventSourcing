@@ -9,28 +9,34 @@ using System.Threading.Tasks;
 
 namespace EventSourcing
 {
-    public class AccountEventProcessor : IProcessor
+    public class AccountEventProcessor<TId> : IProcessor<TId>
     {
 
-        private IDictionary<string, IDomainEventHandler<object>> Handlers { get; }
+        private IDictionary<string, Action<IDomainEvent<TId>>> _actions;
 
-
-        public AccountEventProcessor(IDictionary<string, IDomainEventHandler<object>> handlers)
+        public AccountEventProcessor()
         {
-            Handlers = handlers;
+            _actions = new Dictionary<string, Action<IDomainEvent<TId>>>();
         }
 
-        public async Task ProcessAsync(object @event, Type type)
+        public void ProcessAsync(object @event, Type type)
         {
-            var n = type.Name;
-            Handlers.TryGetValue(type.Name, out var handler);
+            _actions.TryGetValue(type.Name, out var handler);
 
             if(handler == null)
             {
                 throw new Exception($"Handler for the type {type.Name} not found");
             }
 
-            await handler.HandleAsync((IDomainEvent<object>)@event);
+            var idevent = Convert.ChangeType(@event, type) as IDomainEvent<TId>;
+
+            handler(idevent);
         }
+
+        public void RegisterApplier<TEvent>(Action<TEvent> applier) where TEvent : IDomainEvent<TId>
+        {
+            _actions.Add(typeof(TEvent).Name, (x) => applier((TEvent)x));
+        }
+
     }
 }

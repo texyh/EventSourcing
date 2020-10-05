@@ -5,13 +5,15 @@ namespace EventSourcing.Domain.Account
 {
     public class Account : AggregateBase<Guid>
     {
-        private const double InitialBalance = 0.0;
+        private const decimal InitialBalance = 0.0M;
 
         public int AccountNumber {get; private set;}
 
         public string AccountOwner {get; private set;}
 
-        public double AcountBalance { get; private set; }
+        public decimal AcountBalance { get; private set; }
+
+        private Account() { }
 
         public Account(Guid id, int accountNumber, string accountOwner)
         {
@@ -33,9 +35,9 @@ namespace EventSourcing.Domain.Account
             RaiseEvent(new AccountCreatedEvent(id, accountNumber, accountOwner));
         }
 
-        public void Deposit(double amount)
+        public void Deposit(decimal amount)
         {
-            if(amount == default(double))
+            if(amount <= default(decimal))
             {
                 throw new ArgumentException("You can not deposit below $1");
             }
@@ -43,7 +45,7 @@ namespace EventSourcing.Domain.Account
             RaiseEvent(new FundDepositEvent(Id, amount));
         }
 
-        public void Withdraw(double amount)
+        public void Withdraw(decimal amount)
         {
             if(amount > AcountBalance)
             {

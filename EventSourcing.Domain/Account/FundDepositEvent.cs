@@ -5,19 +5,19 @@ namespace EventSourcing.Domain.Account
 {
     public class FundDepositEvent : DomainEventBase<Guid>
     {
-        public double Amount { get; private set; }
+        public decimal Amount { get; private set; }
 
         public FundDepositEvent()
         {
 
         }
 
-        public FundDepositEvent(Guid aggregateId, double amount) : base(aggregateId)
+        public FundDepositEvent(Guid aggregateId, decimal amount) : base(aggregateId)
         {
             Amount = amount;
         }
 
-        public FundDepositEvent(Guid aggregateId, long aggregateVersion, double amount) : base(aggregateId, aggregateVersion)
+        public FundDepositEvent(Guid aggregateId, long aggregateVersion, decimal amount) : base(aggregateId, aggregateVersion)
         {
             Amount = amount;
         }

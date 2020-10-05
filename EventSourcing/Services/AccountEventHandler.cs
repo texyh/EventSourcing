@@ -24,7 +24,7 @@ namespace EventSourcing.Services
         {
             await _accountRepository.InsertAsync(new AccountReadModel
             {
-                Balance = 0.0,
+                Balance = 0.0M,
                 Id = @event.AggregateId.ToString(),
                 Name = @event.AccountOwner,
                 Number = @event.AccountNumber

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace EventSourcing.Services
 {
-    public interface IDomainEventHandler<TEvent> : IHandler
+    public interface IDomainEventHandler<TEvent> 
     {
         Task HandleAsync(TEvent @event);
     }

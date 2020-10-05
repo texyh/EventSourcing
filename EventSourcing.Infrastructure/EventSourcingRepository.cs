@@ -14,9 +14,9 @@ namespace EventSourcing.Infrastructure
     {
         private readonly IEventStore _eventStore;
 
-        private readonly IProcessor _publisher;
+        private readonly IProcessor<TAggregateId> _publisher;
 
-        public EventSourcingRepository(IEventStore eventStore, IProcessor publisher)
+        public EventSourcingRepository(IEventStore eventStore, IProcessor<TAggregateId> publisher)
         {
             _eventStore = eventStore;
             _publisher = publisher;
@@ -30,14 +30,14 @@ namespace EventSourcing.Infrastructure
 
                 foreach (var @event in await _eventStore.ReadEventsAsync(id))
                 {
-                    (aggregate as AggregateBase<TAggregate>).ApplyEvent((IDomainEvent<TAggregate>)@event.DomainEvent, @event.EventNumber);
+                    (aggregate as AggregateBase<TAggregate>).ApplyEvent(@event.DomainEvent as IDomainEvent<TAggregate>, @event.EventNumber);
                 }
 
                 return aggregate;
             }
             catch (Exception ex)
             {
-                return null;
+                throw ex;
             }
         }
 
@@ -49,7 +49,7 @@ namespace EventSourcing.Infrastructure
                 {
                     await _eventStore.AppendEventAsync(@event);
                     
-                    await _publisher.ProcessAsync(@event, @event.GetType());
+                    _publisher.ProcessAsync(@event, @event.GetType());
                 }
 
                 aggregate.ClearUncommittedEvents();
